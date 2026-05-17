@@ -27,3 +27,6 @@ steps:
 
 images:
   - 'gcr.io/$PROJECT_ID/focusflow-app'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
