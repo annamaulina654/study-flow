@@ -1,0 +1,29 @@
+steps:
+  # Step 1: Build the Docker image
+  # We use the app_build/ directory as the build context where the Dockerfile is located.
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/focusflow-app', './app_build']
+
+  # Step 2: Push the Docker image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/focusflow-app']
+
+  # Step 3: Deploy the image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'focusflow-app'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/focusflow-app'
+      - '--region'
+      - 'us-central1' # You can change this to your desired region (e.g., asia-southeast2 for Jakarta)
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '8080'
+
+images:
+  - 'gcr.io/$PROJECT_ID/focusflow-app'
